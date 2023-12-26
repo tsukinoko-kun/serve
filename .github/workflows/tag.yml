@@ -20,8 +20,6 @@ concurrency:
 
 jobs:
     tag:
-        environment:
-            name: github-pages
         runs-on: ubuntu-latest
         steps:
           - name: Install jq
@@ -40,7 +38,7 @@ jobs:
             run: |
               git config --global user.email "actions@github.com"
               git config --global user.name "GitHub Actions"
-              current=v$(go run cmd/hl/main.go -v 2>&1)
+              current=v$(go run cmd/serve/main.go -v 2>&1)
               tags=$(curl https://api.github.com/repos/Frank-Mayer/serve/tags)
               latest=$(echo $tags | jq -r '.[0].name')
               if [ "$current" = "$latest" ]; then
