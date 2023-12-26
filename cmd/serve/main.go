@@ -28,14 +28,15 @@ var (
 func main() {
 	flag.Parse()
 
+	if *vers {
+		fmt.Println(version.Version)
+		return
+	}
+
 	if *verb {
 		log.SetLevel(log.DebugLevel)
 	} else {
 		log.SetLevel(log.InfoLevel)
-	}
-
-	if *vers {
-		fmt.Println(version.Version)
 	}
 
 	// Check if the directory exists
