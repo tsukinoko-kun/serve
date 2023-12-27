@@ -14,7 +14,6 @@ func Compile(title string, md []byte) []byte {
 			parser.FencedCode |
 			parser.Autolink |
 			parser.Strikethrough |
-			parser.SpaceHeadings |
 			parser.Footnotes |
 			parser.NoEmptyLineBeforeBlock |
 			parser.HeadingIDs |
@@ -48,12 +47,13 @@ func Doc(title string, body []byte, libs ...string) []byte {
 	htmlDoc := strings.Builder{}
 	htmlDoc.WriteString("<!DOCTYPE html>\n")
 	htmlDoc.WriteString("<html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">")
-	htmlDoc.WriteString("<style>:root { color-scheme: light dark; } body { font-family: sans-serif; } h1, h2, h3, h4, h5, h6 { font-family: sans-serif; }</style>")
+    htmlDoc.WriteString("<style>:root { color-scheme: light dark; } body { font-family: sans-serif; } h1, h2, h3, h4, h5, h6 { font-family: sans-serif; } main { max-width: 1000px; margin: 0 auto; padding: 4rem 1rem; }</style>")
 	htmlDoc.WriteString("<title>")
 	htmlDoc.WriteString(title)
 	htmlDoc.WriteString("</title>")
-	htmlDoc.WriteString("</head><body>")
+	htmlDoc.WriteString("</head><body><main>")
 	htmlDoc.Write(body)
+    htmlDoc.WriteString("</main>")
 
 	for _, lib := range libs {
 		htmlDoc.WriteString(lib)
