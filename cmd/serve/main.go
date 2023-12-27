@@ -22,7 +22,7 @@ var (
 	port       = flag.Int("port", 8080, "Port to listen on")
 	verb       = flag.Bool("verbose", false, "Verbose output")
 	vers       = flag.Bool("version", false, "Print version")
-	fileServer = http.FileServer(http.Dir(*dirPath))
+	fileServer http.Handler
 )
 
 func main() {
@@ -58,6 +58,8 @@ func main() {
 	if err != nil {
 		log.Fatal("Error getting absolute path", "path", *dirPath, "error", err)
 	}
+
+    fileServer = http.FileServer(http.Dir(absPath))
 
 	// Middleware to compile Markdown files if the -md flag is set
 	http.Handle("/", http.HandlerFunc(handler))
@@ -112,7 +114,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			}
 			sb.WriteString("</ul>")
 			w.Header().Set("Content-Type", "text/html")
-			_, err = w.Write(md.Compile([]byte(sb.String())))
+			_, err = w.Write(md.Doc(r.URL.Path, []byte(sb.String())))
 			if err != nil {
 				http.Error(w, fmt.Sprintf("Error serving directory listing: %v", err), http.StatusInternalServerError)
 				return
@@ -129,7 +131,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, fmt.Sprintf("Error reading Markdown file: %v", err), http.StatusInternalServerError)
 			return
 		}
-		htmlContent := md.Compile(fileContent)
+		htmlContent := md.Compile(r.URL.Path, fileContent)
 		w.Header().Set("Content-Type", "text/html")
 		_, err = w.Write(htmlContent)
 		if err != nil {
@@ -138,5 +140,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	fileServer.ServeHTTP(w, r)
+	
+    // Serve the file
+    fileServer.ServeHTTP(w, r)
 }
