@@ -129,7 +129,7 @@ func buildDirectoryListingHTML(w http.ResponseWriter, r *http.Request, reqPath s
 
 	if r.URL.Path != "/" {
 		// Add a link to the parent directory
-		sb.WriteString(fmt.Sprintf("<a href=%q>%s</a><br>", "/", ".."))
+		sb.WriteString(fmt.Sprintf("<a href=%q>../</a><br>", posixpath.Dir(r.URL.Path)))
 	}
 
 	dirEntries, _ := os.ReadDir(reqPath)
