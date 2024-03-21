@@ -82,7 +82,7 @@ const (
 		`window.location.reload();` +
 		`}` +
 		`}` +
-		`window.setInterval(isContentUpToDate, 1000);` +
+		`window.setInterval(isContentUpToDate, 2000);` +
 		`</script>`
 )
 
