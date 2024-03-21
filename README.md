@@ -6,8 +6,17 @@ Run `serve` to start a webserver hosting the content of a directory.
 
 ## Install
 
+### Go install
+
 ```bash
 go install github.com/Frank-Mayer/serve/cmd/serve@latest
+```
+
+### Homebrew
+
+```sh
+brew tap Frank-Mayer/tap
+brew install Frank-Mayer/tap/serve
 ```
 
 ## Usage

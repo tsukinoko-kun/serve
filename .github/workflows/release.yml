@@ -1,0 +1,89 @@
+# yaml-language-server: https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/github-workflow.json
+---
+name: goreleaser
+
+on:
+  create:
+    tags:
+      - "**"
+
+permissions:
+  contents: write
+  packages: write
+  # issues: write
+
+jobs:
+  test-mac:
+    runs-on: macos-latest
+    steps:
+      - name: Setup Go environment
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache: true
+          architecture: x64
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build
+        run: go build ./...
+      - name: Test
+        run: go test ./... -v
+  test-win:
+    runs-on: windows-latest
+    steps:
+      - name: Setup Go environment
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache: true
+          architecture: x64
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build
+        run: go build ./...
+      - name: Test
+        run: go test ./... -v
+  test-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Go environment
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache: true
+          architecture: x64
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build
+        run: go build ./...
+      - name: Test
+        run: go test ./... -v
+
+  goreleaser:
+    needs:
+      - test-linux
+      - test-mac
+      - test-win
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      # More assembly might be required: Docker logins, GPG, etc.
+      # It all depends on your needs.
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          # either 'goreleaser' (default) or 'goreleaser-pro'
+          distribution: goreleaser
+          version: ${{ env.GITHUB_REF_NAME }}
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+          # Your GoReleaser Pro key, if you are using the 'goreleaser-pro' distribution
+          # GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
