@@ -10,24 +10,22 @@ Run `serve` to start a webserver hosting the content of a directory.
 go install github.com/Frank-Mayer/serve/cmd/serve@latest
 ```
 
+## Usage
+
+```bash
+serve [directory] [flags...]
+```
+
 ## Flags
 
-- `dir` string
+- `--md`
 
-  Path to the directory to serve (default ".")
+  Compile Markdown files to HTML
 
-- `md`
+- `--port` `-p` int
 
-   Compile Markdown files to HTML
+  Port to listen on (default is a random port)
 
-- `port` int
-
-  Port to listen on (default 8080)
-
-- `verbose`
+- `--verbose` `-v`
 
   Verbose output
-
-- `version`
-
-  Print version

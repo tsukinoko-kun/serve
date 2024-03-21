@@ -18,9 +18,9 @@ func IsIn(path string, dir string) bool {
 		return false
 	}
 
-    if absPath == absDir {
-        return true
-    }
+	if absPath == absDir {
+		return true
+	}
 
 	relPath, err := filepath.Rel(absDir, absPath)
 	if err != nil {
@@ -30,4 +30,3 @@ func IsIn(path string, dir string) bool {
 	return len(relPath) != 0 &&
 		!strings.HasPrefix(relPath, "..")
 }
-
