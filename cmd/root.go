@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"os/signal"
 	"path/filepath"
 
 	"github.com/Frank-Mayer/serve/internal/handler"
@@ -79,7 +80,24 @@ var rootCmd = &cobra.Command{
 		}
 		fmt.Printf("Listening on http://%s\n", listener.Addr())
 
-		return http.Serve(listener, nil)
+		go func() {
+			err := http.Serve(listener, nil)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
+
+		// await termination (e.g. via SIGINT)
+		c := make(chan os.Signal, 1)
+		signal.Notify(c, os.Interrupt)
+		signal := <-c
+		log.Infof("Received signal %s, shutting down...", signal)
+		// close the listener
+		if err := listener.Close(); err != nil {
+			return errors.Join(fmt.Errorf("failed to close listener"), err)
+		}
+
+		return nil
 	},
 }
 
