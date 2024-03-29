@@ -57,16 +57,50 @@ const (
 		`:root {` +
 		`color-scheme: light dark;` +
 		`}` +
+		`* {` +
+		`min-width: 0;` +
+		`min-height: 0;` +
+		`box-sizing: border-box;` +
+		`}` +
 		`body {` +
 		`font-family: sans-serif;` +
 		`}` +
 		`h1, h2, h3, h4, h5, h6 {` +
-		`font-family: sans-serif;` +
+		`font-family: serif;` +
+		`}` +
+		`code, pre {` +
+		`font-family: monospace;` +
 		`}` +
 		`main {` +
 		`max-width: 1000px;` +
 		`margin: 0 auto;` +
 		`padding: 4rem 1rem;` +
+		`}` +
+		`a {` +
+		`color: #007bff;` +
+		`text-decoration: underline;` +
+		`}` +
+		`a:hover {` +
+		`color: #0056b3;` +
+		`}` +
+		`table {` +
+		`border-collapse: collapse;` +
+		`width: 100%;` +
+		`}` +
+		`table, td, th {` +
+		`border: 1px solid;` +
+		`}` +
+		`td, th {` +
+		`padding: 0.5rem;` +
+		`}` +
+		`blockquote {` +
+		`margin: 0;` +
+		`padding: 0.5rem;` +
+		`background-color: #007bff40;` +
+		`border-left: 0.25rem solid #007bff;` +
+		`}` +
+		`code, blockquote {` +
+		`border-radius: 0.25rem;` +
 		`}` +
 		`</style>`
 	htmlDocUpdateScriptStr = `<script defer>` +
