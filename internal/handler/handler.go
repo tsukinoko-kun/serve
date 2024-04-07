@@ -88,15 +88,34 @@ func handleFileExistence(_ http.ResponseWriter, r *http.Request, reqPath string)
 func handleDirectory(w http.ResponseWriter, r *http.Request, reqPath string) (bool, error) {
 	fi, _ := os.Stat(reqPath)
 	if fi.IsDir() {
+		log.Debug("specified path is a directory")
 		indexFilePath := filepath.Join(reqPath, "index.html")
 		if fi, err := os.Stat(indexFilePath); err != nil {
-			err := buildDirectoryListingHTML(w, r, reqPath)
-			return err == nil, err
+			// no index.html
+			if readmeFilePaths, err := filepath.Glob(filepath.Join(reqPath, "[rR][eE][aA][dD][mM][eE].[mM][dD]")); mdCompile && err == nil && len(readmeFilePaths) != 0 {
+				// readme.md exists
+				reqPath := readmeFilePaths[0]
+				log.Debug("serving readme.md", "reqPath", reqPath)
+				fileContent, err := os.ReadFile(reqPath)
+				if err != nil {
+					return true, errors.Join(fmt.Errorf("failed to read Markdown file %q", reqPath), err)
+				}
+				if err := md.WriteMarkdown(w, r, r.URL.Path, fileContent); err != nil {
+					return true, errors.Join(fmt.Errorf("failed to serve compiled Markdown file %q", reqPath), err)
+				}
+				return true, nil
+			} else {
+				err := buildDirectoryListingHTML(w, r, reqPath)
+				return err == nil, err
+			}
 		} else {
+			// index.html exists
 			if fi.IsDir() {
 				// 404: directory called "index.html" has to be explicitly requested
 				return false, fmt.Errorf("path %q does not exist", r.URL.Path)
 			} else {
+				log.Debug("serving index.html")
+				// serve index.html
 				http.ServeFile(w, r, indexFilePath)
 				return true, nil
 			}
