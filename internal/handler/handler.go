@@ -42,12 +42,11 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	if err := handleFileExistence(w, r, reqPath); err != nil {
-		if os.IsNotExist(err) {
-			httpError(w, err.Error(), http.StatusNotFound)
-		} else {
-			httpError(w, err.Error(), http.StatusInternalServerError)
-		}
+	if exists, err := handleFileExistence(w, r, reqPath); err != nil {
+		httpError(w, err.Error(), http.StatusInternalServerError)
+		return
+	} else if !exists {
+		httpError(w, fmt.Sprintf("file %q not found", r.URL.Path), http.StatusNotFound)
 		return
 	}
 
@@ -69,20 +68,20 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 	fileServer.ServeHTTP(w, r)
 }
 
-func handleFileExistence(_ http.ResponseWriter, r *http.Request, reqPath string) error {
+func handleFileExistence(_ http.ResponseWriter, r *http.Request, reqPath string) (bool, error) {
 	_, err := os.Stat(reqPath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return err
+			return false, nil
 		}
-		return fmt.Errorf("failed to check if file %q exists: %v", r.URL.Path, err)
+		return false, fmt.Errorf("failed to check if file %q exists: %v", r.URL.Path, err)
 	}
 
 	if !utils.IsIn(reqPath, absPath) {
-		return fmt.Errorf("file %q does not exist", r.URL.Path)
+		return false, nil
 	}
 
-	return nil
+	return true, nil
 }
 
 // handleDirectory checks if the requested path is a directory and serves the directory listing if it is.
