@@ -43,7 +43,11 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	if err := handleFileExistence(w, r, reqPath); err != nil {
-		httpError(w, err.Error(), http.StatusInternalServerError)
+		if os.IsNotExist(err) {
+			httpError(w, err.Error(), http.StatusNotFound)
+		} else {
+			httpError(w, err.Error(), http.StatusInternalServerError)
+		}
 		return
 	}
 
@@ -69,7 +73,7 @@ func handleFileExistence(_ http.ResponseWriter, r *http.Request, reqPath string)
 	_, err := os.Stat(reqPath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return fmt.Errorf("file %q does not exist", r.URL.Path)
+			return err
 		}
 		return fmt.Errorf("failed to check if file %q exists: %v", r.URL.Path, err)
 	}
