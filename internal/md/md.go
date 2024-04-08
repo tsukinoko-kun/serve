@@ -106,17 +106,30 @@ const (
 	htmlDocUpdateScriptStr = `<script defer>` +
 		`const hashEl = document.querySelector('meta[name="serve-hash"]');` +
 		`if (!hashEl) {` +
-		`throw new Error('serve-hash meta tag not found');` +
+		`throw new Error("serve-hash meta tag not found");` +
 		`}` +
 		`const hash = hashEl.content;` +
 		`async function isContentUpToDate() {` +
 		`const response = await fetch(window.location.href, {cache: "no-store", method: "HEAD"});` +
-		`const newHash = response.headers.get('Serve-Hash');` +
+		`const newHash = response.headers.get("Serve-Hash");` +
 		`if (newHash !== hash) {` +
 		`window.location.reload();` +
 		`}` +
 		`}` +
 		`window.setInterval(isContentUpToDate, 2000);` +
+		`</script>`
+	anchorsScript = `<script defer>` +
+		`const anchors = document.querySelectorAll("a[href]");` +
+		`for(const a of anchors) {` +
+		`const href = a.getAttribute("href");` +
+		`if (href.startsWith(".")) {` +
+		`const url = new URL(window.location);` +
+		`url.pathname = (url.pathname+href.substring(1)).replace(/\/+/g,"/");` +
+		`a.setAttribute("href", url.href);` +
+		`}else{` +
+		`a.setAttribute("target", "_blank");` +
+		`}` +
+		`}` +
 		`</script>`
 )
 
@@ -137,6 +150,7 @@ func doc(title string, body []byte, libs ...string) []byte {
 	}
 
 	htmlDoc.WriteString(htmlDocUpdateScriptStr)
+	htmlDoc.WriteString(anchorsScript)
 	htmlDoc.WriteString("</body></html>")
 
 	return []byte(htmlDoc.String())
