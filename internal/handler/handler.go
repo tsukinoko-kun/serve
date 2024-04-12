@@ -103,7 +103,7 @@ func handleDirectory(w http.ResponseWriter, r *http.Request, reqPath string) (bo
 				if err != nil {
 					return true, errors.Join(fmt.Errorf("failed to read Markdown file %q", reqPath), err)
 				}
-				if err := md.WriteMarkdown(w, r, r.URL.Path, fileContent); err != nil {
+				if err := md.WriteMarkdown(w, r, r.URL.Path, fileContent, r.URL.Path); err != nil {
 					return true, errors.Join(fmt.Errorf("failed to serve compiled Markdown file %q", reqPath), err)
 				}
 				return true, nil
@@ -135,7 +135,8 @@ func handleMarkdown(w http.ResponseWriter, r *http.Request, reqPath string) erro
 		if err != nil {
 			return errors.Join(fmt.Errorf("failed to read Markdown file %q", r.URL.Path), err)
 		}
-		if err := md.WriteMarkdown(w, r, r.URL.Path, fileContent); err != nil {
+		dirPath := posixpath.Dir(r.URL.Path)
+		if err := md.WriteMarkdown(w, r, r.URL.Path, fileContent, dirPath); err != nil {
 			return errors.Join(fmt.Errorf("failed to serve compiled Markdown file %q", r.URL.Path), err)
 		}
 		return nil
@@ -164,7 +165,8 @@ func buildDirectoryListingHTML(w http.ResponseWriter, r *http.Request, reqPath s
 	}
 	sb.WriteString("</ul>")
 
-	if err := md.WriteDoc(w, r, r.URL.Path, []byte(sb.String())); err != nil {
+	dirPath := posixpath.Dir(r.URL.Path)
+	if err := md.WriteDoc(w, r, r.URL.Path, dirPath, []byte(sb.String())); err != nil {
 		return errors.Join(fmt.Errorf("failed to serve directory listing for %q", r.URL.Path), err)
 	}
 	return nil

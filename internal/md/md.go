@@ -3,6 +3,7 @@ package md
 import (
 	"crypto/sha1"
 	"encoding/base64"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -32,7 +33,7 @@ var (
 	rendererOptions = html.RendererOptions{Flags: html.CommonFlags | html.NoreferrerLinks | html.NoopenerLinks | html.LazyLoadImages}
 )
 
-func WriteMarkdown(w http.ResponseWriter, r *http.Request, title string, md []byte) error {
+func WriteMarkdown(w http.ResponseWriter, r *http.Request, title string, md []byte, dirPath string) error {
 	p := parser.NewWithExtensions(parserExtensions)
 	renderer := html.NewRenderer(rendererOptions)
 
@@ -40,7 +41,7 @@ func WriteMarkdown(w http.ResponseWriter, r *http.Request, title string, md []by
 
 	htmlBody := markdown.Render(doc, renderer)
 
-	return WriteDoc(w, r, title, htmlBody,
+	return WriteDoc(w, r, title, dirPath, htmlBody,
 		`<script id="MathJax-script" async defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>`,
 		`<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">`,
 		`<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>`,
@@ -119,12 +120,13 @@ const (
 		`window.setInterval(isContentUpToDate, 2000);` +
 		`</script>`
 	anchorsScript = `<script defer>` +
+		`console.log(dirPath);` +
 		`const anchors = document.querySelectorAll("a[href]");` +
 		`for(const a of anchors) {` +
 		`const href = a.getAttribute("href");` +
 		`if (href.startsWith(".")) {` +
 		`const url = new URL(window.location);` +
-		`url.pathname = (url.pathname+href.substring(1)).replace(/\/+/g,"/");` +
+		`url.pathname = ((dirPath || url.pathname) + href.substring(1)).replace(/\/+/g,"/");` +
 		`a.setAttribute("href", url.href);` +
 		`}else{` +
 		`a.setAttribute("target", "_blank");` +
@@ -133,12 +135,13 @@ const (
 		`</script>`
 )
 
-func doc(title string, body []byte, libs ...string) []byte {
+func doc(title string, body []byte, dirPath string, libs ...string) []byte {
 	htmlDoc := strings.Builder{}
 	htmlDoc.WriteString(htmlDocHeadStr)
 	htmlDoc.WriteString(`<meta name="serve-hash" content="`)
 	htmlDoc.WriteString(contentHash(body))
 	htmlDoc.WriteString(`">`)
+	htmlDoc.WriteString(fmt.Sprintf(`<script>const dirPath = %q;</script>`, dirPath))
 	htmlDoc.WriteString("<title>")
 	htmlDoc.WriteString(title)
 	htmlDoc.WriteString("</title></head><body><main>")
@@ -163,7 +166,7 @@ func contentHash(content []byte) string {
 	return base64.StdEncoding.EncodeToString(h.Sum(content))
 }
 
-func WriteDoc(w http.ResponseWriter, r *http.Request, title string, body []byte, libs ...string) error {
+func WriteDoc(w http.ResponseWriter, r *http.Request, title string, dirPath string, body []byte, libs ...string) error {
 	w.Header().Set("Content-Type", "text/html")
 	w.Header().Set("Cache-Control", "no-store")
 	w.Header().Set("Serve-Hash", contentHash(body))
@@ -172,6 +175,6 @@ func WriteDoc(w http.ResponseWriter, r *http.Request, title string, body []byte,
 		return nil
 	}
 
-	_, err := w.Write(doc(title, body, libs...))
+	_, err := w.Write(doc(title, body, dirPath, libs...))
 	return err
 }
