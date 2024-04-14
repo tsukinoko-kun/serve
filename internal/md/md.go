@@ -103,6 +103,12 @@ const (
 		`code, blockquote {` +
 		`border-radius: 0.25rem;` +
 		`}` +
+		`pre > code:not(.hljs) {` +
+		`color: rgb(152, 168, 222);` +
+		`background-color: rgb(22, 25, 29);` +
+		`padding: 1em;` +
+		`display: block;` +
+		`}` +
 		`</style>`
 	htmlDocUpdateScriptStr = `<script defer>` +
 		`const hashEl = document.querySelector('meta[name="serve-hash"]');` +
