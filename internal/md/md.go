@@ -45,7 +45,8 @@ func WriteMarkdown(w http.ResponseWriter, r *http.Request, title string, md []by
 		`<script id="MathJax-script" async defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>`,
 		`<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">`,
 		`<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>`,
-		`<script defer>hljs.highlightAll();</script>`)
+		`<script defer>hljs.highlightAll();</script>`,
+	)
 }
 
 const (
@@ -105,7 +106,7 @@ const (
 		`}` +
 		`pre > code:not(.hljs) {` +
 		`color: rgb(152, 168, 222);` +
-		`background-color: rgb(22, 25, 29);` +
+		`background-color: #0d1117;` +
 		`padding: 1em;` +
 		`display: block;` +
 		`}` +
@@ -139,6 +140,11 @@ const (
 		`}` +
 		`}` +
 		`</script>`
+	mermaidScript = `<script type="module">` +
+		`import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10.9.0/+esm";` +
+		`mermaid.initialize({ startOnLoad: false });` +
+		`mermaid.run({querySelector:"pre>code.language-mermaid"});` +
+		`</script>`
 )
 
 func doc(title string, body []byte, dirPath string, libs ...string) []byte {
@@ -160,6 +166,7 @@ func doc(title string, body []byte, dirPath string, libs ...string) []byte {
 
 	htmlDoc.WriteString(htmlDocUpdateScriptStr)
 	htmlDoc.WriteString(anchorsScript)
+	htmlDoc.WriteString(mermaidScript)
 	htmlDoc.WriteString("</body></html>")
 
 	return []byte(htmlDoc.String())

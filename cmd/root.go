@@ -91,6 +91,7 @@ var rootCmd = &cobra.Command{
 		c := make(chan os.Signal, 1)
 		signal.Notify(c, os.Interrupt)
 		signal := <-c
+		fmt.Println("")
 		log.Infof("Received signal %s, shutting down...", signal)
 		// close the listener
 		if err := listener.Close(); err != nil {
