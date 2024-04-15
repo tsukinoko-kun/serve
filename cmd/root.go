@@ -9,7 +9,7 @@ import (
 	"os/signal"
 	"path/filepath"
 
-	"github.com/Frank-Mayer/serve/internal/handler"
+	"github.com/tsukinoko-kun/serve/internal/handler"
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 )

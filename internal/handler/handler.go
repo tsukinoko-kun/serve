@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Frank-Mayer/serve/internal/md"
-	"github.com/Frank-Mayer/serve/internal/utils"
+	"github.com/tsukinoko-kun/serve/internal/md"
+	"github.com/tsukinoko-kun/serve/internal/utils"
 	"github.com/charmbracelet/log"
 )
 

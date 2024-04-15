@@ -1,4 +1,4 @@
-module github.com/Frank-Mayer/serve
+module github.com/tsukinoko-kun/serve
 
 go 1.22.2
 

@@ -3,7 +3,7 @@ package utils_test
 import (
 	"testing"
 
-	"github.com/Frank-Mayer/serve/internal/utils"
+	"github.com/tsukinoko-kun/serve/internal/utils"
 )
 
 func isInTestWrapper(t *testing.T, path string, dir string, expected bool) {

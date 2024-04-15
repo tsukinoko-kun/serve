@@ -1,6 +1,6 @@
 # serve
 
-[![Test](https://github.com/Frank-Mayer/serve/actions/workflows/test.yml/badge.svg)](https://github.com/Frank-Mayer/serve/actions/workflows/test.yml)
+[![Test](https://github.com/tsukinoko-kun/serve/actions/workflows/test.yml/badge.svg)](https://github.com/tsukinoko-kun/serve/actions/workflows/test.yml)
 
 Run `serve` to start a webserver hosting the content of a directory.
 
@@ -9,14 +9,14 @@ Run `serve` to start a webserver hosting the content of a directory.
 ### Go install
 
 ```bash
-go install github.com/Frank-Mayer/serve/cmd/serve@latest
+go install github.com/tsukinoko-kun/serve/cmd/serve@latest
 ```
 
 ### Homebrew
 
 ```sh
-brew tap Frank-Mayer/tap
-brew install Frank-Mayer/tap/serve
+brew tap tsukinoko-kun/tap
+brew install tsukinoko-kun/tap/serve
 ```
 
 ## Usage
