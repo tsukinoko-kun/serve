@@ -25,11 +25,11 @@ universal_binaries:
 
 brews:
   - name: serve
-    homepage: https://github.com/Frank-Mayer/serve
+    homepage: https://github.com/tsukinoko-kun/serve
     description: Simple file server with a little extra
     repository:
-      owner: Frank-Mayer
+      owner: tsukinoko-kun
       name: homebrew-tap
     commit_author:
-      name: Frank-Mayer
+      name: tsukinoko-kun
       email: gh@frankmayer.dev
