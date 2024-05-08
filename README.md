@@ -9,7 +9,7 @@ Run `serve` to start a webserver hosting the content of a directory.
 ### Go install
 
 ```bash
-go install github.com/tsukinoko-kun/serve/cmd/serve@latest
+go install github.com/tsukinoko-kun/serve@latest
 ```
 
 ### Homebrew
