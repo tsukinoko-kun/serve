@@ -5,7 +5,7 @@ go 1.22.2
 require (
 	github.com/charmbracelet/log v0.4.0
 	github.com/gomarkdown/markdown v0.0.0-20231222211730-1d6d20845b47
-	github.com/spf13/cobra v1.8.0
+	github.com/spf13/cobra v1.8.1
 )
 
 require (
